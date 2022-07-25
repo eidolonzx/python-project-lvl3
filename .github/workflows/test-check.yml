@@ -1,0 +1,25 @@
+name: test and test coverage check
+on: [push]
+jobs:
+  test-check:
+    runs-on: ubuntu-latest 
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+            pip3 install poetry
+            poetry install
+            pip3 install PyYAML
+            pip3 install pytest
+            poetry run pytest 
+    - name: Code coverage
+      uses: paambaati/codeclimate-action@v3.0.0
+      env:
+        CC_TEST_REPORTER_ID: 2caf8d959f6efd9004f472c0ad79c808e26c0990aceacd8ccaec0d09bb52d26e
+      with:
+        coverageCommand: poetry run pytest --cov=page_loader --cov-report xml
+        debug: true
